@@ -1,0 +1,214 @@
+<div class="content-popup-lead-unit">
+  <h2>Nhập thông tin đơn vị đầu mối</h2>
+  <hr>
+  <form nz-form [formGroup]='formModal'>
+    <div nz-row [nzGutter]="[30, 0]">
+      <div nz-col nzXs='24' nzLg='12' nzXXl='12' class="pd_bott2">
+        <mb-input-text-news formControlName="unitCode" [mbMaxLength]="20"
+                            (paste)="handlePaste($event)"
+                            (keydown)="preventInvalidKeys($event)"
+                            (input)="transformInput($event)"
+                            (mbChange)="UpperCaseUnitCode($event)"
+                            mbLabelText="{{'Mã đơn vị đầu mối' | translate}}" [mbRequired]="true"
+                            mbPlaceholderText="{{'Nhập' | translate}}"
+                            [mbType]="isSubmitted && formModal.controls['unitCode'].errors ? 'error' : 'default'"
+                            [mbShowError]="isSubmitted &&  formModal.controls['unitCode']?.errors !== null"
+                            [mbErrors]=" formModal.controls['unitCode']?.errors" [mbErrorDefs]="[
+                              { errorName: 'required', errorDescription: 'contract.contractPayment.validate.required' | translate:
+                              {'param': 'Mã đơn vị đầu mối' | translate }},
+                              { errorName: 'alphanumericUppercase', errorDescription: 'Chỉ cho nhập số và chữ hoa không dấu, không nhập ký tự đặc biệt' | translate:
+                              {'param': 'Mã đơn vị đầu mối' | translate }},
+                          ]">
+        </mb-input-text-news>
+      </div>
+      <div nz-col nzXs='24' nzLg='12' nzXXl='12' class="pd_bott2">
+        <mb-input-text-news formControlName="unitName" [mbMaxLength]="500"
+                            mbLabelText="{{'Đơn vị đầu mối' | translate}}" [mbRequired]="true"
+                            mbPlaceholderText="{{'Nhập' | translate}}"
+                            [mbType]="isSubmitted && formModal.controls['unitName'].errors ? 'error' : 'default'"
+                            [mbShowError]="isSubmitted &&  formModal.controls['unitName']?.errors !== null"
+                            [mbErrors]=" formModal.controls['unitName']?.errors" [mbErrorDefs]="[
+                              { errorName: 'required', errorDescription: 'contract.contractPayment.validate.required' | translate:
+                              {'param': 'Đơn vị đầu mối' | translate }},
+                              { errorName: 'whitespace', errorDescription: 'Không được chứa khoảng trống' | translate:
+                              {'param': 'Đơn vị đầu mối' | translate }},
+                          ]">
+        </mb-input-text-news>
+      </div>
+
+      <div nz-col [nzXs]='24' nzLg='12' nzXXl='12'>
+        <mb-date-picker formControlName='startDate'
+                        [mbShowIconMessage]="false"
+                        mbLabelText="{{'Ngày hiệu lực' | translate}}<span class='label__required'>*</span>"
+                        mbPlaceholderText="--{{ 'dd/mm/yyy' | translate }}--"
+                        [mbDisabledDate]="disabledRequisitionDate"
+                        [mbType]="
+                          isSubmitted && formModal.controls['startDate'].errors
+                            ? 'error'
+                            : 'default'
+                          "
+                        [mbShowError]="
+                            isSubmitted && formModal.controls['startDate']?.errors !== null
+                          "
+                        [mbErrors]="formModal.controls['startDate']?.errors"
+                        [mbErrorDefs]="[
+                            {
+                              errorName: 'required',
+                              errorDescription:
+                                'system.validate.required'
+                                | translate
+                                  : {
+                                      param:
+                                        'Ngày hệu lực'
+                                        | translate
+                                    }
+                            }
+                          ]"
+        >
+        </mb-date-picker>
+      </div>
+      <div nz-col [nzXs]='24' nzLg='12' nzXXl='12'>
+        <mb-date-picker formControlName='endDate'
+                        [mbShowIconMessage]="false"
+                        mbLabelText="{{'Ngày hết hạn hiệu lực' | translate}}"
+                        mbPlaceholderText="--{{ 'dd/mm/yyy' | translate }}--"
+                        [mbType]="
+                          isSubmitted && formModal.controls['endDate'].errors
+                            ? 'error'
+                            : 'default'
+                          "
+                        [mbShowError]="
+                            isSubmitted && formModal.controls['endDate']?.errors !== null
+                          "
+                        [mbErrors]="formModal.controls['endDate']?.errors"
+                        [mbErrorDefs]="[
+                             {
+                              errorName: 'dateRangeInvalid',
+                              errorDescription:
+                                ' Ngày hết hạn hiệu lực phải lớn hơn ngày hiệu lực'
+                                | translate
+                                  : {
+                                      param:
+                                        ''
+                                        | translate
+                                    }
+                            }
+                          ]"
+        >
+        </mb-date-picker>
+      </div>
+
+<!--      <div nz-col [nzXs]='24' nzLg='12' nzXXl='12'>-->
+<!--        <mb-select-check-able [mbDataSelects]="listBuggetGroup" [mbKeyLabel]="'name'" [mbKeyValue]="'code'" [mbMaxTagCount]='2'-->
+<!--                              class="mb-50"-->
+<!--                              mbLabelText="{{ 'Nhóm ngân sách' | translate }} <span class='label__required'>*</span>"-->
+<!--                              [mbShowAction]="false" [mbShowCheckAll]="listBuggetGroup && listBuggetGroup.length > 0"-->
+<!--                              mbPlaceholder="&#45;&#45;{{'Nhóm ngân sách' | translate}}&#45;&#45;"-->
+<!--                              mbLabelCheckAll="{{ 'payment.paymentRequest.label.selectAll' | translate }}"-->
+<!--                              formControlName="budgetGroups"-->
+<!--                              [mbShowIconMessage]="false"-->
+<!--                              [mbErrors]="formModal.controls['budgetGroups']?.errors"-->
+<!--                              [mbShowError]="isSubmitted && formModal.controls['budgetGroups']?.errors !== null"-->
+<!--                              [mbType]="isSubmitted && formModal.controls['budgetGroups'].errors ? 'error' : 'default'"-->
+<!--                              [mbErrorDefs]="[{ errorName: 'required', errorDescription: 'system.validate.required' | translate: {'param': 'Nhóm ngân sách' | translate }}]"-->
+
+<!--        >-->
+<!--        </mb-select-check-able>-->
+<!--      </div>-->
+
+      <div nz-col nzXs='24' nzLg='24' nzXXl='24' class="pd_bott2">
+        <mb-input-text-news formControlName="note" [mbMaxLength]="1000"
+                            [mbRequired]="false"
+                            pamsFeUppercaseWithoutAccents
+                            mbLabelText="{{'Ghi chú' | translate}}"
+                            mbPlaceholderText="{{'Nhập' | translate}}"
+                            mbInputType="textarea"
+        >
+        </mb-input-text-news>
+      </div>
+    </div>
+  </form>
+  <div style="padding-top: 15px"></div>
+  <div nz-row [nzGutter]="[30, 0]">
+    <div nz-col nzXs='24' nzLg='12' nzXXl='12' class="pd_bott2">
+<!--      search table-->
+      <div nz-row [nzGutter]="[30, 0]">
+        <div nz-col [nzXs]='24' [nzLg]='4' [nzXXl]='4' class="text-unit" style="display: flex;align-items: center; font-size: 0.8rem;font-weight: bold">
+          <h4 style="color: #4F5B89;">Chọn Đơn Vị</h4></div>
+        <div nz-col [nzXs]='24' [nzLg]='14' [nzXXl]='14' >
+          <mb-input-text-news [(ngModel)]="unitName" [mbMaxLength]="500"
+                              [mbIsNew]="true"
+                              mbPlaceholderText="{{'Tìm kiếm' | translate}}"
+                              [mbType]="'default'"
+                              (keyup.enter)="searchUnit()"
+                              [mbPrefixIcon]="'search'">
+          </mb-input-text-news>
+        </div>
+        <div nz-col [nzXs]='24' [nzLg]='3' [nzXXl]='3'><h2>
+          <mb-btn mbType='SUBMIT' [mbButtonAvailableStyle]="'SECONDARY'" [mbButtonSize]="'default'"
+                  class="btn-search" mbButtonText="{{ 'common.label.search' | translate }}"
+                  (click)="searchUnit()">
+          </mb-btn>
+        </h2></div>
+      </div>
+
+      <mb-table-wrap [mbTitle]="''"
+                     [extra]="false"
+                     [nonBg]="true"
+                     (tableHeaderList)="headerChecked($event)">
+        <mb-table [keyCheck]="'organizationId'"
+                  (changePageNum)='changePage($event)'
+                  [tableConfig]='tableConfig'
+                  [tableData]='listDataOrigin'
+                  [checkedCashArrayFromComment]="checkedTb"
+                  [showSizeChanger]="true"
+                  (changePageSize)="changePageSize($event)"
+                  (selectedChange)="selectedChange($event)"
+                  [heightTable]='scrollTable'
+                  [nzShowPagination]="false"
+        >
+        </mb-table>
+      </mb-table-wrap>
+    </div>
+    <div nz-col nzXs='24' nzLg='12' nzXXl='12' class="pd_bott2">
+<!--      <div nz-row [nzGutter]="[30, 0]">-->
+        <div nz-col [nzXs]='24' [nzLg]='12' [nzXXl]='12'><h4 style='color: #4F5B89;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    padding-top: 0.5rem;'>Danh sách đã chọn</h4></div>
+<!--      </div>-->
+      <mb-table-wrap [mbTitle]="''"
+                     [extra]="false"
+                     [nonBg]="true">
+        <mb-table
+            [nzShowPagination]="false"
+                  (changePageNum)='changePage($event)'
+                  [tableConfig]='tableConfigDrop'
+                  [tableData]='listDataOriginDrop'
+                  [showSizeChanger]="true"
+                  (changePageSize)="changePageSize($event)"
+                  (selectedChange)="selectedChange($event)"
+                  [heightTable]='scrollTable'
+        >
+        </mb-table>
+      </mb-table-wrap>
+    </div>
+  </div>
+  <div *nzModalFooter>
+    <div class="action-search" style="display: flex; justify-content: space-around">
+      <mb-button-new class="btn-action" (click)="doClose()"
+                     mbText="{{ 'Thoát' | translate }}" mbButtonBg="none"
+                     mbTextColor="#141ED2"
+                     mbButtonMarginLeft="0px"  mbButtonBorderColor="none" mbButtonWidth="200px">
+      </mb-button-new>
+      <mb-button-new *ngIf="objFunction.edit" class="btn-action" (click)="doSave()"
+                     mbText="{{ 'Lưu' | translate }}" mbButtonBg="#F6F8FF"
+                     mbTextColor="#141ED2" mbButtonBorderColor="none" mbButtonWidth="200px" mbButtonMarginLeft="0px">
+      </mb-button-new>
+      <mb-button-new *ngIf="viewEye !== 'edit' && objFunction.edit" class="btn-action" (click)="doSaveToAdd()"
+                     mbText="{{ 'Lưu & Thêm mới' | translate }}" mbButtonBg="#141ED2"
+                     mbButtonMarginLeft="0px" mbTextColor="#FFFFFF" mbButtonBorderColor="none" mbButtonWidth="200px">
+      </mb-button-new>
+    </div>
+  </div>
+</div>
