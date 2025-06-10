@@ -1,0 +1,17 @@
+@import "libs/shared/assets/src/global-style/color";
+@import "libs/shared/assets/src/global-style/_select.scss";
+@import "libs/shared/assets/src/global-style/_table.scss";
+@import "libs/shared/assets/src/global-style/variable";
+
+.risk-management-list {
+  .btn-add-risk-management {
+    position: fixed;
+    top: 134px;
+    z-index: 1000;
+    right: 25px;
+  }
+  .search-group{
+    display: flex;
+    justify-content: space-between;
+  }
+}
