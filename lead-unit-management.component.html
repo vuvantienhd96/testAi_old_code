@@ -1,0 +1,241 @@
+<ng-container>
+  <mb-import
+    [showContent]="isImportTabInfo"
+    [baseUrl]="baseUrl"
+    keyFile="files"
+    [queryParams]="{
+
+        }"
+    [customSize]="100000000"
+    [data]="{
+
+        }"
+    (onCloseModal)="doCloseImportInfo($event)"
+    (onEmitData)="importDataInfo($event)"
+    (onEmitFile)="addFileDocument($event)"
+    (onUUID)="doUUID($event)"
+    [urlApiDownloadTemp]="urlDownloadImportInfo"
+    [urlApiImport]="urlImportInfo"
+  >
+  </mb-import>
+</ng-container>
+
+<nz-modal [(nzVisible)]="isShowLogPopup" nzTitle="Xuất file lỗi" (nzOnCancel)="isShowLogPopup = !isShowLogPopup"
+          [nzWidth]='450' [nzMaskClosable]='false' [nzFooter]='null'>
+  <ng-container *nzModalContent>
+    <div nz-row>
+      <div nz-col nzSpan='24' style="text-align: center">
+        <h4>Đã có lỗi xảy ra vui lòng tải tệp bên dưới để kiểm tra</h4>
+        <mb-btn
+          style="margin-left: -20px;"
+          *ngIf="objFunction.export"
+          [mbPrefixIcon]="'common:excel'"
+          [mbButtonAvailableStyle]="'OUTLINE'"
+          [mbButtonSize]="'default'"
+          mbButtonText="{{ 'Xuất file lỗi' | translate }}"
+          (click)="exportExelError()">
+        </mb-btn>
+      </div>
+      <div nz-col nzSpan='24' [ngStyle]="{'margin-top': '24px'}">
+        <div nz-row nzAlign='middle' [nzGutter]='[30, 0]' nzJustify='center'>
+          <mb-button
+            mbButtonType="BORDER"
+            mbButtonText="Đóng"
+            mbButtonAvailableStyle='DANGER'
+            (click)='isShowLogPopup = !isShowLogPopup'
+          >
+          </mb-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
+
+<div class='risk-management-list'>
+  <div nz-col nzSpan="12" class="btn-add-risk-management">
+<!--    <ng-container *ngIf='objFunction?.create'>-->
+    <ng-container>
+      <mb-btn [mbButtonAvailableStyle]="'SECONDARY'"
+              *ngIf="objFunction.import"
+              mbButtonText="{{'Tải lên' | translate}}"
+              (click)="isImportTabInfo = !isImportTabInfo"
+              [mbPrefixIcon]="'upload'">
+      </mb-btn>
+    </ng-container>
+    <ng-container>
+      <mb-btn (click)="add(undefined, 'add')" mbPrefixIcon='plus'
+              *ngIf="objFunction.create"
+              mbButtonText="{{'Tạo mới' | translate}}"
+              [mbPrefixIcon]="'plus'">
+      </mb-btn>
+    </ng-container>
+  </div>
+
+  <div >
+    <div class='app-card search-group'>
+      <form [formGroup]="formSearch" nz-col nzSpan="20" class="select-asset-right">
+        <div nz-row [nzGutter]="[30, 0]">
+        <div nz-col [nzXs]='12' [nzLg]='8' [nzXXl]='8'>
+          <mb-input-text-news formControlName="search" [mbMaxLength]="500"
+                              [mbIsNew]="true"
+                              mbPlaceholderText="{{'Tìm kiếm theo mã đơn vị, tên đơn vị đầu mối, đơn vị pams' | translate}}"
+                              [mbType]="'default'"
+                              (keyup.enter)="basicSearch('action')"
+                              [mbPrefixIcon]="'search'">
+          </mb-input-text-news>
+        </div>
+<!--        <div nz-col [nzXs]='12' [nzLg]='5' [nzXXl]='5'>-->
+<!--          <mb-select-check-able [mbDataSelects]="listBuggetGroup" [mbKeyLabel]="'name'" [mbKeyValue]="'code'" [mbMaxTagCount]='2'-->
+<!--                                class="mb-50"-->
+<!--                                [mbShowAction]="false" [mbShowCheckAll]="listBuggetGroup && listBuggetGroup.length > 0"-->
+<!--                                mbPlaceholder="&#45;&#45;{{'Nhóm ngân sách' | translate}}&#45;&#45;"-->
+<!--                                mbLabelCheckAll="{{ 'payment.paymentRequest.label.selectAll' | translate }}"-->
+<!--                                formControlName="budgetGroupCode"-->
+
+<!--          >-->
+<!--          </mb-select-check-able>-->
+<!--        </div>-->
+
+          <div nz-col [nzXs]='12' [nzLg]='5' [nzXXl]='5'>
+            <mb-select
+              [mbDataSelects]='listStatus'
+              mbKeyLabel='label'
+              mbKeyValue='value'
+              mbPlaceholder="{{ 'Trạng thái' | translate }}"
+              [mbOptionHeightPx]='35'
+              formControlName='status'
+            ></mb-select>
+          </div>
+
+
+        <div nz-col [nzXs]='12' [nzLg]='3' [nzXXl]='3' class='button-group'>
+          <mb-btn mbType='SUBMIT' [mbButtonAvailableStyle]="'SECONDARY'" [mbButtonSize]="'default'"
+                  class="btn-search" mbButtonText="{{ 'common.label.search' | translate }}"
+                  (click)="basicSearch('action')">
+          </mb-btn>
+        </div>
+      </div>
+      </form>
+      <div class="headerTableSelect">
+        <!--          <mb-btn *ngIf='objFunction?.export'-->
+        <mb-btn
+          style="margin-left: -20px;"
+          *ngIf="objFunction.export"
+          [mbPrefixIcon]="'common:excel'"
+          [mbButtonAvailableStyle]="'OUTLINE'"
+          [mbButtonSize]="'default'"
+          mbButtonText="{{ 'Xuất excel' | translate }}"
+          (click)="exportExel()">
+        </mb-btn>
+      </div>
+    </div>
+    <div class='search__content--group'>
+      <mb-table-merge-cell-wrap [mbTitle]="''"
+                                [nonBg]="true"
+                                [isCustomActionConfig]="true"
+                                [isShowActionConfig]="false">
+        <mb-table-merge-cell class="table-contract"
+                             (changePageNum)='changePageNum($event)'
+                             (changePageSize)="changePageSize($event)"
+                             [tableConfig]="tableConfigTransaction"
+                             [dataList]="listDataTransaction"
+                             [showQuickJumper]="true"
+                             [isScrollHeight]="true"
+                             nzScrollHeight="490px"
+                             [showSizeChanger]="true"
+                             [pageSizeOptions]="[15, 30, 50, 100]">
+        </mb-table-merge-cell>
+      </mb-table-merge-cell-wrap>
+    </div>
+
+    <ng-template #linkUnit
+                 let-data="data">
+<!--      <a [routerLink]="['/budget/budget-plan/detail']" [queryParams]="{id:data.budgetPlanId}">-->
+      <a>{{ data.unitCode }}</a>
+    </ng-template>
+    <ng-template #organizationCodeTml
+                 let-data="data">
+      <a>{{ data.organizationCode }}</a>
+    </ng-template>
+
+
+    <ng-template #actionTmpl
+                 let-data='data'>
+      <ng-container *ngFor='let item of listStatus'>
+        <nz-tag class="custom-nz-tag"
+                [nzColor]="item.bgColor"
+                [ngStyle]="{'color': item.color, 'font-size': '14px'}"
+                *ngIf='data.status === item.value'>{{item.label | translate}}
+        </nz-tag>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #budgetGroupsTml
+                 let-data='data'>
+      <ul>
+        <li *ngFor="let item of ConvertJson(data?.budgetGroups)">
+          {{ item.code }} - {{ item.name }}
+        </li>
+      </ul>
+    </ng-template>
+
+    <ng-template #workflow let-data='data'>
+      <div style="display: flex;align-items: center;justify-content: center;">
+        <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT' nz-dropdown
+                   [nzDropdownMenu]="menu">
+          <span nz-icon nzType="more" nzTheme="outline"></span>
+        </mb-button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu nzSelectable class="menu-asset-allocation">
+<!--            <li nz-menu-item *ngIf='objFunction?.view'>-->
+<!--              <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT'-->
+<!--                         (click)="view(id)">-->
+<!--                <span nz-icon nzType="eye" nzTheme="outline"></span>-->
+<!--                <span class="label-dropdown">Xem</span>-->
+<!--              </mb-button>-->
+<!--            </li>-->
+            <li nz-menu-item>
+              <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT'
+                         (click)="add(data, 'edit')">
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+                <span class="label-dropdown">Chỉnh sửa</span>
+              </mb-button>
+            </li>
+<!--            <li nz-menu-item *ngIf="status === 'Y' && objFunction?.edit">-->
+<!--              <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT'-->
+<!--                         (click)="changeStatus(id,code,'N')">-->
+<!--                <span nz-icon nzType="minus-circle" nzTheme="outline"></span>-->
+<!--                <span class="label-dropdown">Ngừng sử dụng</span>-->
+<!--              </mb-button>-->
+<!--            </li>-->
+<!--            <li nz-menu-item *ngIf="status !== 'Y' && objFunction?.edit">-->
+<!--              <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT'-->
+<!--                         (click)="changeStatus(id,code,'Y')">-->
+<!--                <span nz-icon nzType="check" nzTheme="outline"></span>-->
+<!--                <span class="label-dropdown">Tái sử dụng</span>-->
+<!--              </mb-button>-->
+<!--            </li>-->
+<!--            <li nz-menu-item *ngIf="objFunction?.edit">-->
+<!--              <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT'-->
+<!--                         (click)="linkButton(id, code, description)">-->
+<!--                <span nz-icon nzType="branches" nzTheme="outline"></span>-->
+<!--                <span class="label-dropdown">Liên kết danh mục</span>-->
+<!--              </mb-button>-->
+<!--            </li>-->
+            <li nz-menu-item>
+              <mb-button mbButtonType="NO_BORDER" mbButtonSize="SMALL" mbButtonAvailableStyle='CONTENT'
+                         (click)="deleteAction(data)">
+                <img width="16" height="16" src="assets/images/new-icon/button/delete.svg"
+                     alt="icon_delete_supplier.svg" />
+                <span class="label-dropdown">Xóa</span>
+              </mb-button>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+
+
